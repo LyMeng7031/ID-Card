@@ -5,11 +5,12 @@ import { useState } from "react";
 import DigitalIDCardStyle1 from "../components/DigitalIDCardStyle1";
 import DigitalIDCardStyle2 from "../components/DigitalIDCardStyle2";
 import DigitalIDCardStyle3 from "../components/DigitalIDCardStyle3";
+import DigitalIDCardSuperCute from "../components/DigitalIDCardSuperCute"; // <-- import cute style
 import cardData from "../data/cardData";
 
 export default function AllIDCardsPage() {
   const router = useRouter();
-  const [selected, setSelected] = useState(0); // 0 = All, 1 = Classic, 2 = Modern, 3 = Minimal
+  const [selected, setSelected] = useState(0); // 0 = All, 1 = Classic, 2 = Modern, 3 = Minimal, 4 = Cute
   const [fade, setFade] = useState(false);
 
   const styleButtons = [
@@ -17,6 +18,7 @@ export default function AllIDCardsPage() {
     { id: 1, name: "Classic Style" },
     { id: 2, name: "Modern Style" },
     { id: 3, name: "Minimal Style" },
+    { id: 4, name: "Cute Style 🐾" }, // added cute style button
   ];
 
   const handleSelect = (id: number) => {
@@ -40,6 +42,9 @@ export default function AllIDCardsPage() {
           <div className="flex justify-center">
             <DigitalIDCardStyle3 cardData={cardData} />
           </div>
+          <div className="flex justify-center">
+            <DigitalIDCardSuperCute cardData={cardData} /> {/* cute card included */}
+          </div>
         </div>
       );
     }
@@ -48,6 +53,7 @@ export default function AllIDCardsPage() {
       1: <DigitalIDCardStyle1 cardData={cardData} />,
       2: <DigitalIDCardStyle2 cardData={cardData} />,
       3: <DigitalIDCardStyle3 cardData={cardData} />,
+      4: <DigitalIDCardSuperCute cardData={cardData} />, // cute style
     };
 
     return (
@@ -56,7 +62,7 @@ export default function AllIDCardsPage() {
           fade ? "opacity-0 -translate-y-4" : "opacity-100 translate-y-0"
         }`}
       >
-        {cardComponent[selected as 1 | 2 | 3]}
+        {cardComponent[selected as 1 | 2 | 3 | 4]}
       </div>
     );
   };

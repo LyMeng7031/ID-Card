@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import DigitalIDCardStyle1 from "../components/DigitalIDCardStyle1";
 import DigitalIDCardStyle2 from "../components/DigitalIDCardStyle2";
 import DigitalIDCardStyle3 from "../components/DigitalIDCardStyle3";
+import DigitalIDCardSuperCute from "../components/DigitalIDCardSuperCute"; // <-- import cute style
 import cardData from "../data/cardData";
 
 export default function ViewIDPage() {
@@ -11,6 +12,7 @@ export default function ViewIDPage() {
   const searchParams = useSearchParams();
   const styleParam = searchParams.get("style");
 
+  // parse style index, default to 1
   const styleIndex = styleParam ? parseInt(styleParam, 10) : 1;
 
   const renderCardStyle = () => {
@@ -21,6 +23,8 @@ export default function ViewIDPage() {
         return <DigitalIDCardStyle2 cardData={cardData} />;
       case 3:
         return <DigitalIDCardStyle3 cardData={cardData} />;
+      case 4:
+        return <DigitalIDCardSuperCute cardData={cardData} />; // cute style
       default:
         return <DigitalIDCardStyle1 cardData={cardData} />;
     }
