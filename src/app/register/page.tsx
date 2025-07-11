@@ -22,18 +22,51 @@ export default function RegisterPage() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = (e: FormEvent) => {
+  const handleRegister = async (e: FormEvent) => {
     e.preventDefault();
-    // You can add form validation here
-    console.log(form);
-    router.push("/profile");
+
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            password: form.password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Registration failed.");
+        return;
+      }
+
+      alert("Registration successful!");
+      router.push("/profile");
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Something went wrong.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-black flex items-center justify-center">
-      <div className="flex w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white dark:bg-gray-900">
+      <div className="flex w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white dark:bg-gray-900 ">
         {/* Left Column - Image */}
-        <div className="hidden lg:block lg:w-5/12 relative">
+        <div className=" lg:w-5/12 relative">
           <Image
             src="https://thumbs.dreamstime.com/b/vertical-collage-portrait-mini-black-white-effect-guy-huge-smart-phone-empty-space-dialogue-bubble-isolated-creative-272274759.jpg"
             alt="Register Visual"
@@ -50,7 +83,6 @@ export default function RegisterPage() {
                 Create an Account!
               </h2>
               <form onSubmit={handleRegister} className="space-y-5">
-                {/* Name Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="firstName">First Name</Label>
@@ -76,7 +108,6 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Email */}
                 <div>
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -90,7 +121,6 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                {/* Passwords */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="password">Password</Label>
@@ -127,11 +157,6 @@ export default function RegisterPage() {
               </form>
 
               <div className="mt-6 text-center space-y-2">
-                {/* <p className="text-sm">
-                  <a href="#" className="text-blue-500 hover:underline">
-                    Forgot Password?
-                  </a>
-                </p> */}
                 <p className="text-sm">
                   Already have an account?{" "}
                   <a href="/login" className="text-blue-500 hover:underline">
