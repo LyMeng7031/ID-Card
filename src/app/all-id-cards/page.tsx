@@ -43,7 +43,8 @@ export default function AllIDCardsPage() {
             <DigitalIDCardStyle3 cardData={cardData} />
           </div>
           <div className="flex justify-center">
-            <DigitalIDCardSuperCute cardData={cardData} /> {/* cute card included */}
+            <DigitalIDCardSuperCute cardData={cardData} />{" "}
+            {/* cute card included */}
           </div>
         </div>
       );
