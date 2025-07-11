@@ -8,6 +8,7 @@ export default function EditIDCardPage() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
+    user_id: cardData.user_id || "",
     fullName: cardData.fullName || "",
     gender: cardData.gender || "",
     dob: cardData.dob || "",

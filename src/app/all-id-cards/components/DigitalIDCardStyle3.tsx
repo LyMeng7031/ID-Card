@@ -6,8 +6,8 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi"; // 🆕 Import edit icon
-import { useRouter } from "next/navigation"; // 🆕 Import router
+import { FiEdit, FiEye } from "react-icons/fi"; // 🆕 Added FiEye
+import { useRouter } from "next/navigation";
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -26,7 +26,7 @@ type CardData = {
 };
 
 export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }) {
-  const router = useRouter(); // 🆕 Use router
+  const router = useRouter();
 
   return (
     <div
@@ -35,30 +35,37 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
         boxShadow: "0 0 20px 6px rgba(255, 215, 0, 0.3)",
       }}
     >
-      {/* 🆕 Edit Icon */}
-      <button
-        onClick={() => router.push("/edit-id")}
-        title="Edit Card"
-        className="absolute top-4 right-4 text-yellow-300 hover:text-yellow-500 cursor-pointer transition-all duration-200"
-      >
-        <FiEdit size={20} />
-      </button>
+      {/* 🆕 View + Edit Icons */}
+      <div className="absolute top-4 right-4 flex gap-3">
+        <button
+          onClick={() => router.push(`/view-id?style=9`)}
+          title="View Card"
+          className="text-yellow-300 hover:text-green-200 transition duration-200 cursor-pointer"
+        >
+          <FiEye size={20} />
+        </button>
+        <button
+          onClick={() => router.push("/edit-id")}
+          title="Edit Card"
+          className="text-yellow-300 hover:text-yellow-500 transition duration-200 cursor-pointer"
+        >
+          <FiEdit size={20} />
+        </button>
+      </div>
 
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
         <img
           src={cardData.profile_url}
           alt="Profile"
-          className="w-24 h-24 rounded-md border-2 border-yellow-300 object-cover"
+          className="w-24 h-24 rounded-md border-2 border-yellow-300 object-cover cursor-pointer"
           style={{
             boxShadow: "0 0 15px 4px rgba(255, 215, 0, 0.7)",
           }}
         />
         <h1
           className="text-xl font-bold text-yellow-300 mt-3 uppercase"
-          style={{
-            textShadow: "0 0 8px rgba(255, 215, 0, 0.8)",
-          }}
+          style={{ textShadow: "0 0 8px rgba(255, 215, 0, 0.8)" }}
         >
           Clearance ID
         </h1>
@@ -81,7 +88,7 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
         <img
           src={cardData.qr_url}
           alt="QR Code"
-          className="w-20 h-20 rounded border border-yellow-300"
+          className="w-20 h-20 rounded border border-yellow-300 shadow-sm cursor-pointer"
           style={{
             boxShadow: "0 0 12px 4px rgba(255, 215, 0, 0.6)",
           }}
@@ -117,7 +124,7 @@ function InfoItem({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="text-yellow-400 mt-1">{icon}</div>
+      <div className="text-yellow-400 mt-1 cursor-pointer">{icon}</div>
       <div>
         <p className="text-yellow-200 font-semibold">{label}</p>
         <p className="text-gray-100">{value}</p>

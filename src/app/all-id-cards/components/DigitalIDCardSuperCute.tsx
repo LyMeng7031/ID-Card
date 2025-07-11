@@ -7,8 +7,8 @@ import {
   FaMapMarkerAlt,
   FaPaw,
 } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi"; // 🆕 Import edit icon
-import { useRouter } from "next/navigation"; // 🆕 Import router
+import { FiEdit, FiEye } from "react-icons/fi"; // 🆕 Import view icon
+import { useRouter } from "next/navigation";
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -29,7 +29,7 @@ type CardData = {
 };
 
 export default function DigitalIDCardDarkMode({ cardData }: { cardData: CardData }) {
-  const router = useRouter(); // 🆕 Initialize router
+  const router = useRouter();
 
   return (
     <div
@@ -37,19 +37,28 @@ export default function DigitalIDCardDarkMode({ cardData }: { cardData: CardData
         hover:shadow-[0_15px_40px_rgba(0,0,0,0.9)] transition-shadow duration-300 ease-in-out"
       style={{ fontFamily: "'Unica One', sans-serif", color: "#e0e0e0" }}
     >
-      {/* 🆕 Edit Icon in Top Right */}
-      <button
-        onClick={() => router.push("/edit-id")}
-        title="Edit Card"
-        className="absolute top-4 right-4 text-indigo-400 hover:text-indigo-200 cursor-pointer transition-all duration-200"
-      >
-        <FiEdit size={20} />
-      </button>
+      {/* 🆕 View + Edit Icons */}
+      <div className="absolute top-4 right-4 flex gap-3">
+        <button
+          onClick={() => router.push(`/view-id?style=dark`)}
+          title="View Card"
+          className="text-indigo-400 hover:text-green-300 cursor-pointer transition-all duration-200"
+        >
+          <FiEye size={20} />
+        </button>
+        <button
+          onClick={() => router.push("/edit-id")}
+          title="Edit Card"
+          className="text-indigo-400 hover:text-indigo-200 cursor-pointer transition-all duration-200"
+        >
+          <FiEdit size={20} />
+        </button>
+      </div>
 
       {/* Profile & Header */}
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div
-          className="relative w-28 h-28 rounded-full border-8 border-indigo-600 shadow-lg overflow-hidden"
+          className="relative w-28 h-28 rounded-full border-8 border-indigo-600 shadow-lg overflow-hidden cursor-pointer"
           style={{ boxShadow: "0 0 15px 5px rgba(75,0,130,0.7)" }}
         >
           <img
@@ -95,7 +104,7 @@ export default function DigitalIDCardDarkMode({ cardData }: { cardData: CardData
         <img
           src={cardData.qr_url}
           alt="QR Code"
-          className="w-24 h-24 rounded-xl border-4 border-indigo-500 shadow-md"
+          className="w-24 h-24 rounded-xl border-4 border-indigo-500 shadow-md cursor-pointer"
           style={{ boxShadow: "0 0 20px 6px rgba(75,0,130,0.7)" }}
         />
       </div>
@@ -119,9 +128,7 @@ function InfoRow({
   value: string | number;
 }) {
   return (
-    <div
-      className="flex items-center space-x-3 bg-zinc-800 rounded-lg px-4 py-2 shadow-sm hover:bg-zinc-700 transition-colors cursor-default select-text"
-    >
+    <div className="flex items-center space-x-3 bg-zinc-800 rounded-lg px-4 py-2 shadow-sm hover:bg-zinc-700 transition-colors cursor-pointer select-text">
       <div className="text-indigo-400 text-xl">{icon}</div>
       <div>
         <p className="font-semibold text-indigo-300">{label}</p>

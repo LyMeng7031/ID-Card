@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FiLogOut, FiMail, FiUser } from "react-icons/fi";
+import { FiLogOut, FiMail, FiUser, FiEdit } from "react-icons/fi";
 import DigitalIDCardStyle1 from "../all-id-cards/components/DigitalIDCardStyle1";
 import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2";
 import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
@@ -40,7 +40,6 @@ export default function ProfilePage() {
 
   return (
     <>
-      {/* CSS for floating animation */}
       <style>{`
         @keyframes float {
           0%, 100% {
@@ -57,21 +56,29 @@ export default function ProfilePage() {
 
       <div className="min-h-screen bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300 flex flex-col items-center justify-center p-6">
         <div className="relative rounded-3xl shadow-xl max-w-sm w-full p-8 text-center">
-          {/* Logout Button */}
-          <button
-            onClick={() => router.push("/login")}
-            className="absolute top-5 right-5 text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110 cursor-pointer"
-            title="Logout"
-          >
-            <FiLogOut size={24} />
-          </button>
+          {/* Edit Profile & Logout Icons */}
+          <div className="absolute top-5 right-5 flex gap-4">
+            <button
+              onClick={() => router.push("/edit-profile")}
+              title="Edit Profile"
+              className="text-gray-500 hover:text-green-600 transition-transform duration-200 hover:scale-110 cursor-pointer"
+            >
+              <FiEdit size={22} />
+            </button>
 
-          {/* Avatar with Gradient Background and animation */}
-          <div>
-            <div className="relative mx-auto w-28 h-28 mb-6">
-            {/* Glowing background gradient */}
+            <button
+              onClick={() => router.push("/login")}
+              title="Logout"
+              className="text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110 cursor-pointer"
+            >
+              <FiLogOut size={22} />
+            </button>
+          </div>
+
+          {/* Avatar with Gradient Glow */}
+          <div className="relative mx-auto w-28 h-28 mb-6">
             <div
-              className={`absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 blur-2xl opacity-70 float-animation`}
+              className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 blur-2xl opacity-70 float-animation"
               style={{ filter: "blur(30px)" }}
             />
             <img
@@ -79,7 +86,6 @@ export default function ProfilePage() {
               alt="Profile Avatar"
               className="relative w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg float-animation"
             />
-            </div>
           </div>
 
           {/* Full Name */}
@@ -87,51 +93,44 @@ export default function ProfilePage() {
             {user.fullName}
           </h2>
 
-          {/* Table-like user info */}
+          {/* User Info Table */}
           <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-300 rounded-xl shadow-inner p-4 text-left text-sm space-y-2">
             <div className="flex items-center gap-2 text-gray-800 font-medium">
-              <FiUser className="text-blue-600" />
+              <FiUser className="text-green-600" />
               <span>@{user.username}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <FiMail className="text-blue-600" />
+              <FiMail className="text-green-600" />
               <span>{user.email}</span>
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Action Buttons with Green Gradient */}
           <div className="mt-8 space-y-4">
             <button
               onClick={() => router.push("/create-id")}
-              className={`${buttonBase} bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-blue-400`}
+              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
             >
               Create ID Card
             </button>
 
             <button
-              onClick={() => router.push(`/view-id?style=${styleIndex}`)}
-              className={`${buttonBase} bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-blue-400`}
-            >
-              View ID Card
-            </button>
-
-            <button
               onClick={toggleStyle}
-              className={`${buttonBase} bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-blue-400`}
+              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
             >
               Change Style
             </button>
 
             <button
               onClick={() => router.push("/all-id-cards")}
-              className={`${buttonBase} bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-blue-400`}
+              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
             >
               See All ID Cards
             </button>
           </div>
         </div>
 
-        {/* Style name + Card */}
+        {/* Card Preview with Fade */}
         <div className="flex flex-col items-center mt-12 transition-opacity duration-300">
           <p className="text-xl font-semibold text-gray-900 mb-3">
             {styleNames[styleIndex.toString()]}

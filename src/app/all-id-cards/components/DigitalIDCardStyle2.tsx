@@ -6,8 +6,8 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi"; // Add this import
-import { useRouter } from "next/navigation"; // Add this import
+import { FiEdit, FiEye } from "react-icons/fi"; // Added FiEye icon
+import { useRouter } from "next/navigation";
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -26,21 +26,30 @@ type CardData = {
 };
 
 export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
-  const router = useRouter(); // initialize router
+  const router = useRouter();
 
   return (
     <div
       className="relative w-full max-w-sm bg-gradient-to-tr from-emerald-400 via-emerald-500 backdrop-blur-xl rounded-3xl p-8 text-white shadow-lg mx-auto border border-green-300"
       style={{ boxShadow: "0 8px 24px rgba(34, 197, 94, 0.6)" }}
     >
-      {/* Edit Icon in top right */}
-      <button
-        onClick={() => router.push("/edit-id")}
-        title="Edit Card"
-        className="absolute top-4 right-4 text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
-      >
-        <FiEdit size={22} />
-      </button>
+      {/* View and Edit Icons */}
+      <div className="absolute top-4 right-4 flex gap-3">
+        <button
+          onClick={() => router.push(`/view-id?style=2`)}
+          title="View Card"
+          className="text-white hover:text-green-200 transition-all duration-200 cursor-pointer"
+        >
+          <FiEye size={22} />
+        </button>
+        <button
+          onClick={() => router.push("/edit-id")}
+          title="Edit Card"
+          className="text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
+        >
+          <FiEdit size={22} />
+        </button>
+      </div>
 
       {/* Profile */}
       <div className="flex flex-col items-center space-y-6 mb-6">
@@ -69,7 +78,7 @@ export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
 
       <SocialShare />
 
-      {/* QR */}
+      {/* QR Code */}
       <div className="mt-6 flex justify-center">
         <img
           src={cardData.qr_url}

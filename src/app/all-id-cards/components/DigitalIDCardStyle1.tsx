@@ -1,5 +1,5 @@
 import React from "react";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiEye } from "react-icons/fi";
 import SocialShare from "../components/SocialShare";
 import { useRouter } from "next/navigation";
 
@@ -28,16 +28,26 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
         boxShadow: "0 0 20px 4px rgba(99, 102, 241, 0.6)",
       }}
     >
-      {/* Edit Icon Button */}
-      <button
-        onClick={() => router.push("/edit-id")}
-        title="Edit Card"
-        className="absolute top-4 right-4 text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
-      >
-        <FiEdit size={22} />
-      </button>
+      {/* View & Edit Buttons */}
+      <div className="absolute top-4 right-4 flex gap-3">
+        <button
+          onClick={() => router.push(`/view-id?style=1`)}
+          title="View Card"
+          className="text-white hover:text-green-300 transition-all duration-200 cursor-pointer" 
+        >
+          <FiEye size={22} />
+        </button>
 
-      {/* Header with profile pic and title */}
+        <button
+          onClick={() => router.push("/edit-id")}
+          title="Edit Card"
+          className="text-white hover:text-yellow-300 transition-all duration-200 cursor-pointer"
+        >
+          <FiEdit size={22} />
+        </button>
+      </div>
+
+      {/* Header */}
       <div className="flex items-center mb-8 space-x-6">
         <div
           className="relative rounded-full p-1"
@@ -47,9 +57,8 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
         >
           <img
             src={cardData.profile_url}
-            alt="Profile Picture"
+            alt="Profile"
             className="w-20 h-20 rounded-full border-2 border-indigo-400"
-            loading="lazy"
           />
         </div>
         <h1 className="text-3xl font-extrabold tracking-wide drop-shadow-lg">
@@ -57,7 +66,7 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
         </h1>
       </div>
 
-      {/* Info list */}
+      {/* Info */}
       <div className="space-y-5">
         <InfoRow label="ID" value={cardData.id} />
         <InfoRow label="User ID" value={cardData.user_id} />
@@ -67,15 +76,16 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
         <InfoRow label="Phone" value={cardData.phone} />
         <InfoRow label="Address" value={cardData.address} />
       </div>
+
+      {/* Social Share */}
       <SocialShare />
 
-      {/* QR code */}
+      {/* QR Code */}
       <div className="flex justify-center mt-8">
         <img
           src={cardData.qr_url}
           alt="QR Code"
           className="w-36 h-36 rounded-lg border-4 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.8)]"
-          loading="lazy"
         />
       </div>
 
