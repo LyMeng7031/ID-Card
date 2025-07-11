@@ -1,4 +1,3 @@
-// app/components/DigitalIDCardDarkMode.tsx
 import React from "react";
 import {
   FaVenusMars,
@@ -8,6 +7,8 @@ import {
   FaMapMarkerAlt,
   FaPaw,
 } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi"; // 🆕 Import edit icon
+import { useRouter } from "next/navigation"; // 🆕 Import router
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -28,12 +29,23 @@ type CardData = {
 };
 
 export default function DigitalIDCardDarkMode({ cardData }: { cardData: CardData }) {
+  const router = useRouter(); // 🆕 Initialize router
+
   return (
     <div
-      className="max-w-sm mx-auto bg-zinc-900 rounded-2xl p-7 shadow-[0_10px_30px_rgba(0,0,0,0.7)] border border-zinc-700
+      className="relative max-w-sm mx-auto bg-zinc-900 rounded-2xl p-7 shadow-[0_10px_30px_rgba(0,0,0,0.7)] border border-zinc-700
         hover:shadow-[0_15px_40px_rgba(0,0,0,0.9)] transition-shadow duration-300 ease-in-out"
       style={{ fontFamily: "'Unica One', sans-serif", color: "#e0e0e0" }}
     >
+      {/* 🆕 Edit Icon in Top Right */}
+      <button
+        onClick={() => router.push("/edit-id")}
+        title="Edit Card"
+        className="absolute top-4 right-4 text-indigo-400 hover:text-indigo-200 cursor-pointer transition-all duration-200"
+      >
+        <FiEdit size={20} />
+      </button>
+
       {/* Profile & Header */}
       <div className="flex flex-col items-center space-y-3 mb-6">
         <div

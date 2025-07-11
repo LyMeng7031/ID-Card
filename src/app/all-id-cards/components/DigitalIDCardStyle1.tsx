@@ -1,6 +1,7 @@
-// app/components/DigitalIDCard.tsx
 import React from "react";
+import { FiEdit } from "react-icons/fi";
 import SocialShare from "../components/SocialShare";
+import { useRouter } from "next/navigation";
 
 type CardData = {
   id: number;
@@ -18,13 +19,24 @@ type CardData = {
 };
 
 export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
+  const router = useRouter();
+
   return (
     <div
-      className="max-w-sm w-full rounded-3xl bg-gradient-to-br from-blue-500 to-blue-900 backdrop-blur-lg border-t-4 border-indigo-500 shadow-lg p-8 text-gray-100"
+      className="relative max-w-sm w-full rounded-3xl bg-gradient-to-br from-blue-500 to-blue-900 backdrop-blur-lg border-t-4 border-indigo-500 shadow-lg p-8 text-gray-100"
       style={{
         boxShadow: "0 0 20px 4px rgba(99, 102, 241, 0.6)",
       }}
     >
+      {/* Edit Icon Button */}
+      <button
+        onClick={() => router.push("/edit-id")}
+        title="Edit Card"
+        className="absolute top-4 right-4 text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
+      >
+        <FiEdit size={22} />
+      </button>
+
       {/* Header with profile pic and title */}
       <div className="flex items-center mb-8 space-x-6">
         <div

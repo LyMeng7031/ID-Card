@@ -1,6 +1,13 @@
-// app/components/DigitalIDCardAlt.tsx
 import React from "react";
-import { FaVenusMars, FaBirthdayCake, FaFlag, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
+import {
+  FaVenusMars,
+  FaBirthdayCake,
+  FaFlag,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import { FiEdit } from "react-icons/fi"; // Add this import
+import { useRouter } from "next/navigation"; // Add this import
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -19,9 +26,22 @@ type CardData = {
 };
 
 export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
+  const router = useRouter(); // initialize router
+
   return (
-    <div className="w-full max-w-sm bg-gradient-to-tr from-emerald-400 via-emerald-500 backdrop-blur-xl rounded-3xl p-8 text-white shadow-lg mx-auto border border-green-300" 
-         style={{ boxShadow: "0 8px 24px rgba(34, 197, 94, 0.6)" }}>
+    <div
+      className="relative w-full max-w-sm bg-gradient-to-tr from-emerald-400 via-emerald-500 backdrop-blur-xl rounded-3xl p-8 text-white shadow-lg mx-auto border border-green-300"
+      style={{ boxShadow: "0 8px 24px rgba(34, 197, 94, 0.6)" }}
+    >
+      {/* Edit Icon in top right */}
+      <button
+        onClick={() => router.push("/edit-id")}
+        title="Edit Card"
+        className="absolute top-4 right-4 text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
+      >
+        <FiEdit size={22} />
+      </button>
+
       {/* Profile */}
       <div className="flex flex-col items-center space-y-6 mb-6">
         <img
@@ -30,8 +50,12 @@ export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
           className="w-28 h-28 rounded-full border-4 border-green-400 shadow-md object-cover"
           style={{ boxShadow: "0 0 12px 4px rgba(34,197,94,0.6)" }}
         />
-        <h1 className="text-2xl font-bold text-green-300 tracking-wide drop-shadow-md">Digital ID</h1>
-        <p className="text-sm text-green-100">ID: {cardData.id} | User: {cardData.user_id}</p>
+        <h1 className="text-2xl font-bold text-green-300 tracking-wide drop-shadow-md">
+          Digital ID
+        </h1>
+        <p className="text-sm text-green-100">
+          ID: {cardData.id} | User: {cardData.user_id}
+        </p>
       </div>
 
       {/* Info Fields */}

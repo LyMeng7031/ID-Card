@@ -6,6 +6,8 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi"; // 🆕 Import edit icon
+import { useRouter } from "next/navigation"; // 🆕 Import router
 import SocialShare from "./SocialShare";
 
 type CardData = {
@@ -24,13 +26,24 @@ type CardData = {
 };
 
 export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }) {
+  const router = useRouter(); // 🆕 Use router
+
   return (
     <div
-      className="w-full max-w-sm bg-gradient-to-tr from-black via-gray-800 to-gray-900 text-gray-100 border-2 border-yellow-400 rounded-lg p-6 mx-auto font-mono"
+      className="relative w-full max-w-sm bg-gradient-to-tr from-black via-gray-800 to-gray-900 text-gray-100 border-2 border-yellow-400 rounded-lg p-6 mx-auto font-mono"
       style={{
         boxShadow: "0 0 20px 6px rgba(255, 215, 0, 0.3)",
       }}
     >
+      {/* 🆕 Edit Icon */}
+      <button
+        onClick={() => router.push("/edit-id")}
+        title="Edit Card"
+        className="absolute top-4 right-4 text-yellow-300 hover:text-yellow-500 cursor-pointer transition-all duration-200"
+      >
+        <FiEdit size={20} />
+      </button>
+
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
         <img
@@ -49,7 +62,9 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
         >
           Clearance ID
         </h1>
-        <p className="text-xs text-yellow-100 tracking-widest">CID: {cardData.id} | Unit: {cardData.user_id}</p>
+        <p className="text-xs text-yellow-100 tracking-widest">
+          CID: {cardData.id} | Unit: {cardData.user_id}
+        </p>
       </div>
 
       {/* Info Fields */}
@@ -80,7 +95,10 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
       <div className="mt-5 border-t border-yellow-600 pt-3 text-xs text-yellow-100 text-center tracking-wide">
         <p>Issued: {cardData.created_at}</p>
         <p>Updated: {cardData.updated_at}</p>
-        <p className="mt-2 text-yellow-400 font-bold" style={{ textShadow: "0 0 6px rgba(255,215,0,0.8)" }}>
+        <p
+          className="mt-2 text-yellow-400 font-bold"
+          style={{ textShadow: "0 0 6px rgba(255,215,0,0.8)" }}
+        >
           AUTHORIZED USE ONLY
         </p>
       </div>
