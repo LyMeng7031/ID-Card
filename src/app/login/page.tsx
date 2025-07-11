@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       console.log("Login successful", data);
       // Save token if needed
       // localStorage.setItem("token", data.token);
