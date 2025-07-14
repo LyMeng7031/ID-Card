@@ -1,155 +1,129 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { FormEvent } from "react";
-import Head from "next/head";
+import { FormEvent, useState } from "react";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleRegister = (e: FormEvent) => {
-    e.preventDefault();
-    router.push("/profile");
-  };
   return (
-    <>
-      <Head>
-        <title>Create Account</title>
-      </Head>
-      <div className="h-full bg-gray-400 dark:bg-black-300 min-h-screen">
-        <div className="mx-auto">
-          <div className="flex justify-center px-6 py-12">
-            <div className="w-full xl:w-3/4 lg:w-11/12 flex">
-              {/* Left Column - Image */}
-              <div
-                className=" bg-gray-400 dark:bg-gray-800 hidden lg:block lg:w-5/12 bg-cover rounded-l-lg"
-                style={{
-                  backgroundImage:
-                    "url(https://thumbs.dreamstime.com/b/vertical-collage-portrait-mini-black-white-effect-guy-huge-smart-phone-empty-space-dialogue-bubble-isolated-creative-272274759.jpg)",
-                }}
-              ></div>
+    <div className="min-h-screen bg-gray-100 dark:bg-black flex items-center justify-center">
+      <div className="flex w-full max-w-6xl shadow-lg rounded-lg overflow-hidden bg-white dark:bg-gray-900 ">
+        {/* Left Column - Image */}
+        <div className=" lg:w-5/12 relative">
+          <Image
+            src="https://thumbs.dreamstime.com/b/vertical-collage-portrait-mini-black-white-effect-guy-huge-smart-phone-empty-space-dialogue-bubble-isolated-creative-272274759.jpg"
+            alt="Register Visual"
+            fill
+            className="object-cover"
+          />
+        </div>
 
-              {/* Right Column - Form */}
-              <div className="w-full lg:w-7/12 bg-white dark:bg-blue-100 p-5 rounded-lg lg:rounded-l-none">
-                <h3 className="py-4 text-2xl text-center text-gray-800 dark:text-black ">
-                  Create an Account!
-                </h3>
-                <form className="px-8 pt-6 pb-8 mb-4 bg-white dark:bg-gray-800 rounded">
-                  <div className="mb-4 md:flex md:justify-between">
-                    <div className="mb-4 md:mr-2 md:mb-0">
-                      <label
-                        htmlFor="firstName"
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
-                      >
-                        First Name
-                      </label>
-                      <input
-                        id="firstName"
-                        type="text"
-                        placeholder="First Name"
-                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                      />
-                    </div>
-                    <div className="md:ml-2">
-                      <label
-                        htmlFor="lastName"
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
-                      >
-                        Last Name
-                      </label>
-                      <input
-                        id="lastName"
-                        type="text"
-                        placeholder="Last Name"
-                        className="w-full px-3 py-2 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <label
-                      htmlFor="email"
-                      className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
-                    >
-                      Email
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="Email"
-                      className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+        {/* Right Column - Form */}
+        <div className="w-full lg:w-7/12 p-8">
+          <Card className="w-full shadow-md">
+            <CardContent className="p-6">
+              <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">
+                Create an Account!
+              </h2>
+              <form onSubmit={handleRegister} className="space-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      name="firstName"
+                      placeholder="First Name"
+                      value={form.firstName}
+                      onChange={handleChange}
+                      required
                     />
                   </div>
-
-                  <div className="mb-4 md:flex md:justify-between">
-                    <div className="mb-4 md:mr-2 md:mb-0">
-                      <label
-                        htmlFor="password"
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
-                      >
-                        Password
-                      </label>
-                      <input
-                        id="password"
-                        type="password"
-                        placeholder="******************"
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 dark:text-white border border-red-500 rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                      />
-                      <p className="text-xs italic text-red-500">
-                        Please choose a password.
-                      </p>
-                    </div>
-                    <div className="md:ml-2">
-                      <label
-                        htmlFor="c_password"
-                        className="block mb-2 text-sm font-bold text-gray-700 dark:text-white"
-                      >
-                        Confirm Password
-                      </label>
-                      <input
-                        id="c_password"
-                        type="password"
-                        placeholder="******************"
-                        className="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 dark:text-white border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                      />
-                    </div>
+                  <div>
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      name="lastName"
+                      placeholder="Last Name"
+                      value={form.lastName}
+                      onChange={handleChange}
+                      required
+                    />
                   </div>
+                </div>
 
-                  <div className="mb-6 text-center">
-                    <button
-                      type="submit"
-                      className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 dark:bg-blue-700 dark:text-white dark:hover:bg-blue-900 focus:outline-none focus:shadow-outline"
-                    >
-                      Register
-                    </button>
-                  </div>
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="Email Address"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
 
-                  <hr className="mb-6 border-t" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      name="password"
+                      type="password"
+                      placeholder="********"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
+                      placeholder="********"
+                      value={form.confirmPassword}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
 
-                  <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 dark:text-blue-500 align-baseline hover:text-blue-800"
-                      href="#"
-                    >
-                      Forgot Password?
-                    </a>
-                  </div>
-                  <div className="text-center">
-                    <a
-                      className="inline-block text-sm text-blue-500 dark:text-blue-500 align-baseline hover:text-blue-800"
-                      href="/login"
-                    >
-                      Already have an account? Login!
-                    </a>
-                  </div>
-                </form>
+                <Button
+                  type="submit"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white"
+                >
+                  Register
+                </Button>
+              </form>
+
+              <div className="mt-6 text-center space-y-2">
+                <p className="text-sm">
+                  Already have an account?{" "}
+                  <a href="/login" className="text-blue-500 hover:underline">
+                    Login!
+                  </a>
+                </p>
               </div>
-              {/* End Right Column */}
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }
