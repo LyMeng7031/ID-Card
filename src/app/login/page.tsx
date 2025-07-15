@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,6 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { authRequest } from "@/lib/api/auth-api";
 import { AuthLoginType } from "@/types/auth-type";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const LoginSchema = z.object({
   user_name: z.string().min(2, {
@@ -27,8 +29,9 @@ const LoginSchema = z.object({
 });
 
 const Login = () => {
-  const navigate = useRouter();
+  const router = useRouter();
   const { AUTH_LOGIN } = authRequest();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -42,54 +45,75 @@ const Login = () => {
     mutationFn: (payload: AuthLoginType) => AUTH_LOGIN(payload),
     onSuccess: (data) => {
       if (data) {
-        navigate.push("/profile");
+        router.push("/profile");
       }
     },
   });
 
   const onSubmit = (data: z.infer<typeof LoginSchema>) => {
-    console.log(data, "===data login");
     mutate(data);
   };
+
   return (
-    <div className="mx-auto w-full max-w-md shadow-lg rounded-2xl p-4 mt-12">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="user_name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="username" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            type="submit"
-            disabled={isPending}
-            className="bg-green-500 hover:bg-green-600"
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-green-300 via-blue-500 to-purple-600">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-2xl">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
+          Welcome 👋
+        </h1>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="user_name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your username" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button
+              type="submit"
+              disabled={isPending}
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              {isPending ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </Form>
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          Don’t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-blue-500 hover:underline font-medium"
           >
-            {isPending ? "Submitting" : "Submit"}
-          </Button>
-        </form>
-      </Form>
+            Register here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
