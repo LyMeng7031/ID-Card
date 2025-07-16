@@ -8,12 +8,12 @@ import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2"
 import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
 import DigitalIDCardSuperCute from "../all-id-cards/components/DigitalIDCardSuperCute";
 import cardData from "../data/cardData";
-
+import { authRequest } from "@/lib/api/auth-api";
 export default function ProfilePage() {
   const router = useRouter();
   const [styleIndex, setStyleIndex] = useState(1);
   const [fade, setFade] = useState(false);
-
+  const { AUTH_LOGOUT } = authRequest();
   const user = {
     fullName: "Makara Chantha",
     username: "makara123",
@@ -25,6 +25,18 @@ export default function ProfilePage() {
     "2": "Modern Style",
     "3": "Minimal Style",
     "4": "Cute Style 🐾",
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AUTH_LOGOUT({
+        user_name: user.username,
+        password: "your_password_here", // Replace with actual password or handle securely
+      });
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   const toggleStyle = () => {
@@ -65,14 +77,13 @@ export default function ProfilePage() {
             >
               <FiEdit size={22} />
             </button>
-
             <button
               onClick={() => router.push("/login")}
               title="Logout"
               className="text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110 cursor-pointer"
             >
               <FiLogOut size={22} />
-            </button>
+            </button>{" "}
           </div>
 
           {/* Avatar with Gradient Glow */}

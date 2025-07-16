@@ -1,5 +1,9 @@
 import axios from "@/lib/api/request";
-import { AuthLoginType, AuthRegisterType } from "@/types/auth-type";
+import {
+  AuthLoginType,
+  AuthLogoutType,
+  AuthRegisterType,
+} from "@/types/auth-type";
 
 export const authRequest = () => {
   const AUTH_REGISTER = async (payload: AuthRegisterType) => {
@@ -17,8 +21,16 @@ export const authRequest = () => {
       data: payload,
     });
   };
+  const AUTH_LOGOUT = async (payload: AuthLogoutType) => {
+    return await axios({
+      url: "/auth/logout",
+      method: "POST",
+      data: payload,
+    });
+  };
   return {
     AUTH_LOGIN,
     AUTH_REGISTER,
+    AUTH_LOGOUT,
   };
 };

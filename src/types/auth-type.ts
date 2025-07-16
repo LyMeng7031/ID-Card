@@ -14,3 +14,8 @@ export type AuthLoginType = {
   user_name: string;
   password: string;
 };
+
+export type AuthLogoutType = {
+  user_name: string;
+  password: string;
+};
