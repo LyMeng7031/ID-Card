@@ -78,8 +78,6 @@ export default function Register() {
       os: device?.os || "Unknown",
       browser: device?.browser || "Unknown",
       ip_address: device?.ip_address || "Unknown",
-      fingerprint: device?.fingerprint || "Unknown",
-      username: "", // Optional, if used by backend
     });
   }
 

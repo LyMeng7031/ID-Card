@@ -97,13 +97,12 @@ export default function CreateIdPage() {
     form.append("link_url", formData.linkUrl);
     if (selectedImage) form.append("picture", selectedImage);
 
-    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/card/create-card`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL as string}/api/v1/card/create-card`;
 
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
         body: form,
-        // headers: { Authorization: `Bearer your_token` }, // If needed
       });
 
       const contentType = response.headers.get("content-type") || "";
@@ -134,135 +133,168 @@ export default function CreateIdPage() {
   }
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white">
-      <CardHeader>
-        <CardTitle>Create ID Card</CardTitle>
-        <CardDescription>Fill your info to create your card.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            ["firstName", "First Name"],
-            ["lastName", "Last Name"],
-            ["email", "Email", "email"],
-            ["phone", "Phone", "tel"],
-            ["address", "Address"],
-            ["job", "Job"],
-            ["platformUrl", "Platform URL"],
-            ["linkUrl", "Link URL"],
-          ].map(([name, label, type = "text"]) => (
-            <div key={name}>
-              <Label htmlFor={name}>{label}</Label>
-              <Input
-                id={name}
-                name={name}
-                type={type}
-                value={formData[name as keyof typeof formData]}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          ))}
+    <div className="min-h-screen bg-gradient-to-br from-[#f0f4ff] to-[#dfe9f3] py-10 px-4">
+      <Card className="w-full max-w-2xl mx-auto shadow-xl border border-gray-200">
+        <CardHeader className="text-center">
+          <CardTitle className="text-3xl font-semibold text-blue-800">
+            Create Your Digital ID Card
+          </CardTitle>
+          <CardDescription className="text-sm text-gray-500">
+            Provide your personal information to generate your custom ID card.
+          </CardDescription>
+        </CardHeader>
 
-          {/* Country Select */}
-          <div>
-            <Label htmlFor="country">Country</Label>
-            <select
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Cambodia">Cambodia</option>
-              <option value="USA">USA</option>
-              <option value="Thailand">Thailand</option>
-            </select>
-          </div>
-
-          {/* Gender */}
-          <div>
-            <Label>Gender</Label>
-            <div className="flex gap-4">
-              {["Male", "Female"].map((g) => (
-                <label key={g} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={g}
-                    checked={formData.gender === g}
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                ["firstName", "First Name"],
+                ["lastName", "Last Name"],
+                ["email", "Email", "email"],
+                ["phone", "Phone", "tel"],
+                ["job", "Job"],
+                ["address", "Address"],
+              ].map(([name, label, type = "text"]) => (
+                <div key={name}>
+                  <Label htmlFor={name} className="text-sm text-gray-600">
+                    {label}
+                  </Label>
+                  <Input
+                    id={name}
+                    name={name}
+                    type={type}
+                    value={formData[name as keyof typeof formData]}
                     onChange={handleChange}
+                    className="rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                    required
                   />
-                  {g}
-                </label>
+                </div>
               ))}
             </div>
-          </div>
 
-          {/* Card Type */}
-          <div>
-            <Label htmlFor="cardType">Card Type</Label>
-            <select
-              id="cardType"
-              name="cardType"
-              value={formData.cardType}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Minimal">Minimal</option>
-              <option value="Student">Student</option>
-              <option value="Employee">Employee</option>
-            </select>
-          </div>
+            {/* Country Select */}
+            <div>
+              <Label htmlFor="country">Country</Label>
+              <select
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                className="w-full mt-1 border px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Country</option>
+                <option value="Cambodia">Cambodia</option>
+                <option value="USA">USA</option>
+                <option value="Thailand">Thailand</option>
+              </select>
+            </div>
 
-          {/* Platform */}
-          <div>
-            <Label htmlFor="platformIcon">Social Platform</Label>
-            <select
-              id="platformIcon"
-              name="platformIcon"
-              value={formData.platformIcon}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-            >
-              <option value="">Select</option>
-              <option value="Facebook">Facebook</option>
-              <option value="TikTok">TikTok</option>
-              <option value="Instagram">Instagram</option>
-              <option value="LinkedIn">LinkedIn</option>
-            </select>
-          </div>
+            {/* Gender */}
+            <div>
+              <Label>Gender</Label>
+              <div className="flex gap-6 mt-2">
+                {["Male", "Female"].map((g) => (
+                  <label key={g} className="flex items-center gap-2 text-sm">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={g}
+                      checked={formData.gender === g}
+                      onChange={handleChange}
+                    />
+                    {g}
+                  </label>
+                ))}
+              </div>
+            </div>
 
-          {/* Upload Image */}
-          <div>
-            <Label htmlFor="picture">Upload Picture</Label>
-            <input
-              type="file"
-              name="picture"
-              id="picture"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border p-2 rounded w-full"
-            />
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="mt-2 w-full max-h-48 object-cover rounded"
+            {/* Card Type */}
+            <div>
+              <Label htmlFor="cardType">Card Type</Label>
+              <select
+                id="cardType"
+                name="cardType"
+                value={formData.cardType}
+                onChange={handleChange}
+                className="w-full mt-1 border px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select Card Type</option>
+                <option value="Minimal">Minimal</option>
+                <option value="Student">Student</option>
+                <option value="Employee">Employee</option>
+              </select>
+            </div>
+
+            {/* Platform */}
+            <div>
+              <Label htmlFor="platformIcon">Social Platform</Label>
+              <select
+                id="platformIcon"
+                name="platformIcon"
+                value={formData.platformIcon}
+                onChange={handleChange}
+                className="w-full mt-1 border px-3 py-2 rounded-md focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Choose Platform</option>
+                <option value="Facebook">Facebook</option>
+                <option value="TikTok">TikTok</option>
+                <option value="Instagram">Instagram</option>
+                <option value="LinkedIn">LinkedIn</option>
+              </select>
+            </div>
+
+            {/* Platform URL and Link URL */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                ["platformUrl", "Platform URL"],
+                ["linkUrl", "Link URL"],
+              ].map(([name, label]) => (
+                <div key={name}>
+                  <Label htmlFor={name}>{label}</Label>
+                  <Input
+                    id={name}
+                    name={name}
+                    value={formData[name as keyof typeof formData]}
+                    onChange={handleChange}
+                    className="rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Upload Image */}
+            <div>
+              <Label htmlFor="picture">Upload Profile Picture</Label>
+              <input
+                type="file"
+                name="picture"
+                id="picture"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full mt-1 border p-2 rounded-md file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:bg-blue-100 file:text-blue-800 hover:file:bg-blue-200"
               />
-            )}
-          </div>
+              {previewUrl && (
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="mt-3 w-full max-h-52 object-cover rounded-md shadow-md"
+                />
+              )}
+            </div>
 
-          <Button type="submit" className="w-full">
-            Create ID Card
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter></CardFooter>
-    </Card>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:opacity-90 transition-all duration-300 py-3 rounded-lg text-lg"
+            >
+               Create ID Card
+            </Button>
+          </form>
+        </CardContent>
+        <CardFooter />
+      </Card>
+    </div>
   );
 }
