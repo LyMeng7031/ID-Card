@@ -11,9 +11,10 @@
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@hookform/resolvers": "^5.1.1",
+    "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@tanstack/react-query": "^5.82.0",
+    "@tanstack/react-query": "^5.83.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.10.0",
     "class-variance-authority": "^0.7.1",

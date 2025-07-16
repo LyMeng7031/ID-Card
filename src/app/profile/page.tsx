@@ -2,23 +2,28 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { FiLogOut, FiMail, FiUser, FiEdit } from "react-icons/fi";
+
 import DigitalIDCardStyle1 from "../all-id-cards/components/DigitalIDCardStyle1";
 import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2";
 import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
 import DigitalIDCardSuperCute from "../all-id-cards/components/DigitalIDCardSuperCute";
+
+import { userRequest } from "@/lib/api/user-api";
 import cardData from "../data/cardData";
 
 export default function ProfilePage() {
   const router = useRouter();
+  const { PROFILE } = userRequest();
+
+  const { data: me, isLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => PROFILE(),
+  });
+
   const [styleIndex, setStyleIndex] = useState(1);
   const [fade, setFade] = useState(false);
-
-  const user = {
-    fullName: "Makara Chantha",
-    username: "makara123",
-    email: "makara@example.com",
-  };
 
   const styleNames: { [key: string]: string } = {
     "1": "Classic Style",
@@ -35,8 +40,22 @@ export default function ProfilePage() {
     }, 300);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
+
   const buttonBase =
     "w-full py-3 rounded-2xl font-semibold shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 hover:brightness-110";
+
+  if (isLoading) return <div className="text-center mt-20">Loading...</div>;
+
+  const user = {
+    fullName: me?.data?.full_name,
+    username: me?.data?.user_name,
+    email: me?.data?.email,
+    avatar: me?.data?.avatar,
+  };
 
   return (
     <>
@@ -56,44 +75,44 @@ export default function ProfilePage() {
 
       <div className="min-h-screen bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300 flex flex-col items-center justify-center p-6">
         <div className="relative rounded-3xl shadow-xl max-w-sm w-full p-8 text-center">
-          {/* Edit Profile & Logout Icons */}
+          {/* Edit & Logout Icons */}
           <div className="absolute top-5 right-5 flex gap-4">
             <button
               onClick={() => router.push("/edit-profile")}
-              title="Edit Profile"
-              className="text-gray-500 hover:text-green-600 transition-transform duration-200 hover:scale-110 cursor-pointer"
+              className="text-gray-500 hover:text-green-600 transition-transform duration-200 hover:scale-110"
             >
               <FiEdit size={22} />
             </button>
-
             <button
-              onClick={() => router.push("/login")}
-              title="Logout"
-              className="text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110 cursor-pointer"
+              onClick={handleLogout}
+              className="text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110"
             >
               <FiLogOut size={22} />
             </button>
           </div>
 
-          {/* Avatar with Gradient Glow */}
+          {/* Avatar */}
           <div className="relative mx-auto w-28 h-28 mb-6">
             <div
               className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 blur-2xl opacity-70 float-animation"
               style={{ filter: "blur(30px)" }}
             />
             <img
-              src="https://api.dicebear.com/7.x/initials/svg?seed=MC"
+              src={
+                user.avatar ||
+                "https://api.dicebear.com/7.x/initials/svg?seed=User"
+              }
               alt="Profile Avatar"
               className="relative w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg float-animation"
             />
           </div>
 
-          {/* Full Name */}
-          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-4">
+          {/* Name */}
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
             {user.fullName}
           </h2>
 
-          {/* User Info Table */}
+          {/* User Info */}
           <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-300 rounded-xl shadow-inner p-4 text-left text-sm space-y-2">
             <div className="flex items-center gap-2 text-gray-800 font-medium">
               <FiUser className="text-green-600" />
@@ -105,7 +124,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Action Buttons with Green Gradient */}
+          {/* Buttons */}
           <div className="mt-8 space-y-4">
             <button
               onClick={() => router.push("/create-id")}
@@ -130,12 +149,11 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Card Preview with Fade */}
+        {/* Card Preview */}
         <div className="flex flex-col items-center mt-12 transition-opacity duration-300">
           <p className="text-xl font-semibold text-gray-900 mb-3">
             {styleNames[styleIndex.toString()]}
           </p>
-
           <div
             className={`transition-opacity duration-300 ${
               fade ? "opacity-0" : "opacity-100"

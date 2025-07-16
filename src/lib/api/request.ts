@@ -1,101 +1,126 @@
 import { CookieName } from "@/types/cookie-enum";
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import Cookies from "js-cookie";
 import { useAuthStore } from "@/app/store/auth-store";
+// import { Store } from '@reduxjs/toolkit';
+
+// export const injectStore = (_store: Store) => {};
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: "http://localhost:5000/api/v1", // Replace with your API base URL
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
+    // Add any other headers or configurations you need
   },
+  // timeout: 1000,
 });
 
-// Retry queue and refresh control
 interface RetryQueueItem {
-  resolve: (value?: unknown) => void;
-  reject: (error?: unknown) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resolve: (value?: any) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reject: (error?: any) => void;
   config: AxiosRequestConfig;
 }
 
+// Create a list to hold the request queue
 const refreshAndRetryQueue: RetryQueueItem[] = [];
+
+// Flag to prevent multiple token refresh requests
 let isRefreshing = false;
 
-// Request Interceptor
+// Add a request interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
+    //  const isLogin = useAppSelector((state) => state.auth.isLogin);
+    // You can modify the request config here, e.g., add authentication headers
+    // config.headers.Authorization = `Bearer ${getToken()}`;
+    // const accessToken = Cookies.get("accessToken");
     const accessToken = useAuthStore.getState().accessToken;
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
+
+    config.headers["Authorization"] = `${accessToken}`;
+
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
-// Response Interceptor
+// Add a response interceptor
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
+  (response) => {
+    // You can modify the response data here, e.g., handling pagination
+    return response.data;
+  },
   async (error) => {
     const originalConfig: AxiosRequestConfig = error.config;
-
-    // Handle Unauthorized (401)
-    if (error.response && error.response.status === 401) {
+    if (
+      error.response &&
+      error.response.status === 401
+      // && !originalConfig._retry
+    ) {
+      // originalConfig._retry = true;
       if (!isRefreshing) {
-        isRefreshing = true;
-
         try {
-          const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/refresh-token`,
-            {},
-            { withCredentials: true }
-          );
-
+          // const refreshToken = Cookies.get(CookieName.REFRESH_TOKEN);
+          // const refreshToken = useAuthStore.getState().refreshToken;
+          const response = await axiosInstance({
+            method: "POST",
+            url: `http://localhost:5000/api/v1/auth/refresh-token`,
+            // data: {
+            //   refreshToken: refreshToken,
+            // },
+          });
           const { accessToken } = response.data;
-
-          // Save new access token
           Cookies.set(CookieName.ACCESS_TOKEN, accessToken);
-          useAuthStore.getState().setAccessToken(accessToken);
+          error.config.headers["Authorization"] = `Bearer ${accessToken}`;
 
-          // Update the failed request with new token
-          originalConfig.headers = {
-            ...originalConfig.headers,
-            Authorization: `Bearer ${accessToken}`,
-          };
-
-          // Retry queued requests
+          // Retry all requests in the queue with the new token
           refreshAndRetryQueue.forEach(({ config, resolve, reject }) => {
             axiosInstance
               .request(config)
-              .then(resolve)
-              .catch(reject);
+              .then((response) => resolve(response))
+              .catch((err) => reject(err));
           });
 
+          // Clear the queue
           refreshAndRetryQueue.length = 0;
 
-          return axiosInstance(originalConfig);
+          // Retry the original request
+          // return axiosInstance(originalRequest);
+          return await axiosInstance(originalConfig);
+          // const responsible = await axiosInstance(error.config);
+          // return responsible.data;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (refreshError: any) {
-          console.log("Refresh token failed:", refreshError);
-          useAuthStore.getState().logout();
-          return Promise.reject(refreshError.response?.data || refreshError);
+          // Handle token refresh error
+          // You can clear all storage and redirect the user to the login page
+          if (refreshError.response && refreshError.response.data) {
+            console.log("error 1");
+            // useAuthStore.getState().logout();
+            return Promise.reject(refreshError.response.data);
+          }
+          return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
         }
       }
-
-      // Queue the failed request while token is refreshing
-      return new Promise((resolve, reject) => {
+      // Add the original request to the queue
+      return new Promise<void>((resolve, reject) => {
         refreshAndRetryQueue.push({ config: originalConfig, resolve, reject });
       });
     }
-
-    // Forbidden (403) — logout user
     if (error.response && error.response.status === 403) {
-      console.warn("Access forbidden. Logging out.");
-      useAuthStore.getState().logout();
-    }
+      // Call the function to log out the user
+      console.log("error 2");
+      // useAuthStore.getState().logout();
 
-    return Promise.reject(error.response?.data || error);
+      return Promise.reject(error.response.data);
+    }
+    // Handle specific error cases here if needed
+    return Promise.reject(error);
   }
 );
 
