@@ -78,8 +78,8 @@ export default function Register() {
       os: device?.os || "Unknown",
       browser: device?.browser || "Unknown",
       ip_address: device?.ip_address || "Unknown",
-      fingerprint: device?.fingerprint || "Unknown",
-      username: "", // Optional, if used by backend
+      // fingerprint: device?.fingerprint || "Unknown",
+      // username: "", // Optional, if used by backend
     });
   }
 
@@ -104,7 +104,10 @@ export default function Register() {
                 Create an Account!
               </h2>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-5"
+                >
                   <FormField
                     control={form.control}
                     name="user_name"
@@ -140,7 +143,11 @@ export default function Register() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} />
+                          <Input
+                            type="email"
+                            placeholder="you@example.com"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -154,7 +161,11 @@ export default function Register() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Password" {...field} />
+                          <Input
+                            type="password"
+                            placeholder="Password"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
