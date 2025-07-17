@@ -33,4 +33,6 @@ export interface CardItem {
   bio: string;
   web_site: string;
   company: string;
+  profile_url: string;
+  user_id: string;
 }

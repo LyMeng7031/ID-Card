@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   FaVenusMars,
@@ -6,26 +8,12 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { FiEdit, FiEye } from "react-icons/fi"; // Added FiEye icon
+import { FiEdit, FiEye } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import { CardItem } from "@/types/card-type";
 import SocialShare from "./SocialShare";
 
-type CardData = {
-  id: number;
-  user_id: number;
-  gender: string;
-  dob: string;
-  nationality: string;
-  phone: string;
-  address: string;
-  qr_url: string;
-  profile_url: string;
-  theme_color: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
+export default function DigitalIDCardAlt({ card }: { card: CardItem }) {
   const router = useRouter();
 
   return (
@@ -34,27 +22,12 @@ export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
       style={{ boxShadow: "0 8px 24px rgba(34, 197, 94, 0.6)" }}
     >
       {/* View and Edit Icons */}
-      <div className="absolute top-4 right-4 flex gap-3">
-        <button
-          onClick={() => router.push(`/view-id?style=2`)}
-          title="View Card"
-          className="text-white hover:text-green-200 transition-all duration-200 cursor-pointer"
-        >
-          <FiEye size={22} />
-        </button>
-        <button
-          onClick={() => router.push("/edit-id")}
-          title="Edit Card"
-          className="text-white hover:text-yellow-300 cursor-pointer transition-all duration-200"
-        >
-          <FiEdit size={22} />
-        </button>
-      </div>
+      
 
       {/* Profile */}
       <div className="flex flex-col items-center space-y-6 mb-6">
         <img
-          src={cardData.profile_url}
+          src={card.profile_url}
           alt="Profile"
           className="w-28 h-28 rounded-full border-4 border-green-400 shadow-md object-cover"
           style={{ boxShadow: "0 0 12px 4px rgba(34,197,94,0.6)" }}
@@ -63,35 +36,40 @@ export default function DigitalIDCardAlt({ cardData }: { cardData: CardData }) {
           Digital ID
         </h1>
         <p className="text-sm text-green-100">
-          ID: {cardData.id} | User: {cardData.user_id}
+          ID: {card.id} | Unit: {card.user_id}
         </p>
       </div>
 
       {/* Info Fields */}
       <div className="space-y-3 text-sm">
-        <InfoItem icon={<FaVenusMars />} label="Gender" value={cardData.gender} />
-        <InfoItem icon={<FaBirthdayCake />} label="DOB" value={cardData.dob} />
-        <InfoItem icon={<FaFlag />} label="Nationality" value={cardData.nationality} />
-        <InfoItem icon={<FaPhoneAlt />} label="Phone" value={cardData.phone} />
-        <InfoItem icon={<FaMapMarkerAlt />} label="Address" value={cardData.address} />
+        <InfoItem icon={<FaVenusMars />} label="Gender" value={card.gender} />
+        <InfoItem icon={<FaBirthdayCake />} label="DOB" value={card.dob} />
+        <InfoItem icon={<FaFlag />} label="Nationality" value={card.nationality} />
+        <InfoItem icon={<FaPhoneAlt />} label="Phone" value={card.phone} />
+        <InfoItem icon={<FaMapMarkerAlt />} label="Address" value={card.address} />
       </div>
 
-      <SocialShare />
+      {/* Social Links */}
+      <SocialShare links={card.socialLinks || []} />
 
       {/* QR Code */}
       <div className="mt-6 flex justify-center">
-        <img
-          src={cardData.qr_url}
-          alt="QR Code"
-          className="w-28 h-28 rounded-xl border border-green-400 shadow-sm"
-          style={{ boxShadow: "0 0 15px rgba(34, 197, 94, 0.7)" }}
-        />
+        {card.qr_url || card.qr_code ? (
+          <img
+            src={card.qr_url || card.qr_code}
+            alt="QR Code"
+            className="w-28 h-28 rounded-xl border border-green-400 shadow-sm"
+            style={{ boxShadow: "0 0 15px rgba(34, 197, 94, 0.7)" }}
+          />
+        ) : (
+          <p className="text-green-100 text-xs">QR code not available</p>
+        )}
       </div>
 
       {/* Footer */}
       <div className="mt-6 text-xs text-green-200 font-mono text-center border-t border-green-500 pt-3">
-        <p>Created: {cardData.created_at}</p>
-        <p>Updated: {cardData.updated_at}</p>
+        <p>Created: {card.created_at}</p>
+        <p>Updated: {card.updated_at}</p>
       </div>
     </div>
   );

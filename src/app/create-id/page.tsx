@@ -1,268 +1,182 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useForm, useFieldArray } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import axiosInstance from "@/lib/api/request";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
-export default function CreateIdPage() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    address: "",
-    country: "",
-    gender: "",
-    job: "",
-    cardType: "",
-    platformIcon: "",
-    platformUrl: "",
-    linkUrl: "",
+
+export default function CreateCardPage() {
+  const { register, handleSubmit, control } = useForm({
+    defaultValues: {
+      gender: "male",
+      nationality: "CAMBODIAN",
+      dob: "",
+      address: "",
+      phone: "",
+      card_type: "Corporate",
+      social: [{ platform: "", icon: "", url: "" }],
+    },
   });
 
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "social",
+  });
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }
+  const router = useRouter();
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files && e.target.files[0];
-    if (file) setSelectedImage(file);
-  }
+  const createCardMutation = useMutation({
+    mutationFn: async (data: any) => {
+      const res = await axiosInstance.post("/card/create-card", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Card created successfully!");
+      router.push("/profile");
+    },
+    onError: () => {
+      toast.error("Failed to create card.");
+    },
+  });
 
-  useEffect(() => {
-    if (!selectedImage) {
-      setPreviewUrl(null);
-      return;
-    }
-    const objectUrl = URL.createObjectURL(selectedImage);
-    setPreviewUrl(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedImage]);
-
-  function getPlatformIconUrl(platform: string): string {
-    switch (platform.toLowerCase()) {
-      case "facebook":
-        return "https://cdns-icons-png.flaticon.com/512/15047/15047435.png";
-      case "tiktok":
-        return "https://cdn-icons-png.flaticon.com/512/3046/3046121.png";
-      case "instagram":
-        return "https://cdn-icons-png.flaticon.com/512/1384/1384063.png";
-      case "linkedin":
-        return "https://cdn-icons-png.flaticon.com/512/1384/1384014.png";
-      default:
-        return "";
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    const form = new FormData();
-    form.append("first_name", formData.firstName);
-    form.append("last_name", formData.lastName);
-    form.append("email", formData.email);
-    form.append("gender", formData.gender.toLowerCase());
-    form.append("nationality", formData.country.toUpperCase());
-    form.append("dob", "1995-06-15");
-    form.append("address", formData.address);
-    form.append("phone", formData.phone);
-    form.append("job", formData.job);
-    form.append("card_type", formData.cardType);
-
-    form.append(
-      "social",
-      JSON.stringify([
-        {
-          platform: formData.platformIcon.toLowerCase(),
-          icon: getPlatformIconUrl(formData.platformIcon),
-          url: formData.platformUrl,
-        },
-      ])
-    );
-    form.append("link_url", formData.linkUrl);
-    if (selectedImage) form.append("picture", selectedImage);
-
-    const apiUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/card/create-card`;
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        body: form,
-        // headers: { Authorization: `Bearer your_token` }, // If needed
-      });
-
-      const contentType = response.headers.get("content-type") || "";
-
-      if (!response.ok) {
-        let message = "";
-        try {
-          message = contentType.includes("json")
-            ? (await response.json()).message
-            : await response.text();
-        } catch {
-          message = "Unknown error occurred.";
-        }
-        alert("❌ Failed to create card: " + message);
-        return;
-      }
-
-      const result = contentType.includes("json")
-        ? await response.json()
-        : await response.text();
-
-      console.log("✅ Success:", result);
-      alert("✅ ID Card created successfully!");
-    } catch (err) {
-      console.error("❌ Network error:", err);
-      alert("❌ Network error occurred.");
-    }
-  }
+  const onSubmit = (data: any) => {
+    createCardMutation.mutate(data);
+  };
 
   return (
-    <Card className="w-full max-w-md mx-auto bg-white">
-      <CardHeader>
-        <CardTitle>Create ID Card</CardTitle>
-        <CardDescription>Fill your info to create your card.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            ["firstName", "First Name"],
-            ["lastName", "Last Name"],
-            ["email", "Email", "email"],
-            ["phone", "Phone", "tel"],
-            ["address", "Address"],
-            ["job", "Job"],
-            ["platformUrl", "Platform URL"],
-            ["linkUrl", "Link URL"],
-          ].map(([name, label, type = "text"]) => (
-            <div key={name}>
-              <Label htmlFor={name}>{label}</Label>
-              <Input
-                id={name}
-                name={name}
-                type={type}
-                value={formData[name as keyof typeof formData]}
-                onChange={handleChange}
-                required
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-2xl space-y-6 bg-white p-8 rounded-xl shadow-lg"
+      >
+        <h1 className="text-2xl font-semibold text-center text-gray-800">
+          Create Your ID Card
+        </h1>
+
+        {/* Gender */}
+        <div>
+          <label className="block mb-1 font-medium">Gender</label>
+          <select
+            {...register("gender")}
+            className="w-full p-2 border rounded-md"
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        {/* Nationality */}
+        <div>
+          <label className="block mb-1 font-medium">Nationality</label>
+          <input
+            type="text"
+            {...register("nationality")}
+            className="w-full p-2 border rounded-md"
+            placeholder="e.g., CAMBODIAN"
+          />
+        </div>
+
+        {/* DOB */}
+        <div>
+          <label className="block mb-1 font-medium">Date of Birth</label>
+          <input
+            type="date"
+            {...register("dob")}
+            className="w-full p-2 border rounded-md"
+          />
+        </div>
+
+        {/* Address */}
+        <div>
+          <label className="block mb-1 font-medium">Address</label>
+          <input
+            type="text"
+            {...register("address")}
+            className="w-full p-2 border rounded-md"
+            placeholder="e.g., Cambodia, Phnom Penh"
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <label className="block mb-1 font-medium">Phone</label>
+          <input
+            type="tel"
+            {...register("phone")}
+            className="w-full p-2 border rounded-md"
+            placeholder="e.g., 086280018"
+          />
+        </div>
+
+        {/* Card Type */}
+        <div>
+          <label className="block mb-1 font-medium">Card Type</label>
+          <select
+            {...register("card_type")}
+            className="w-full p-2 border rounded-md"
+          >
+            <option value="Corporate">Corporate</option>
+            <option value="Modern">Modern</option>
+            <option value="Minimal">Minimal</option>
+          </select>
+        </div>
+
+        {/* Social Links */}
+        <div className="space-y-4">
+          <label className="block text-lg font-semibold">Social Links</label>
+          {fields.map((item, index) => (
+            <div
+              key={item.id}
+              className="grid grid-cols-1 md:grid-cols-3 gap-2 border p-4 rounded-md bg-gray-50"
+            >
+              <input
+                type="text"
+                placeholder="Platform (e.g., Facebook)"
+                {...register(`social.${index}.platform`)}
+                className="p-2 border rounded-md"
               />
+              <input
+                type="text"
+                placeholder="Icon URL"
+                {...register(`social.${index}.icon`)}
+                className="p-2 border rounded-md"
+              />
+              <input
+                type="text"
+                placeholder="Profile URL"
+                {...register(`social.${index}.url`)}
+                className="p-2 border rounded-md"
+              />
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="text-red-500 col-span-1 mt-1 underline"
+              >
+                Remove
+              </button>
             </div>
           ))}
+          <button
+            type="button"
+            onClick={() => append({ platform: "", icon: "", url: "" })}
+            className="text-blue-600 underline"
+          >
+            + Add Social Link
+          </button>
+        </div>
 
-          {/* Country Select */}
-          <div>
-            <Label htmlFor="country">Country</Label>
-            <select
-              id="country"
-              name="country"
-              value={formData.country}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Cambodia">Cambodia</option>
-              <option value="USA">USA</option>
-              <option value="Thailand">Thailand</option>
-            </select>
-          </div>
-
-          {/* Gender */}
-          <div>
-            <Label>Gender</Label>
-            <div className="flex gap-4">
-              {["Male", "Female"].map((g) => (
-                <label key={g} className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value={g}
-                    checked={formData.gender === g}
-                    onChange={handleChange}
-                  />
-                  {g}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Card Type */}
-          <div>
-            <Label htmlFor="cardType">Card Type</Label>
-            <select
-              id="cardType"
-              name="cardType"
-              value={formData.cardType}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-              required
-            >
-              <option value="">Select</option>
-              <option value="Minimal">Minimal</option>
-              <option value="Student">Student</option>
-              <option value="Employee">Employee</option>
-            </select>
-          </div>
-
-          {/* Platform */}
-          <div>
-            <Label htmlFor="platformIcon">Social Platform</Label>
-            <select
-              id="platformIcon"
-              name="platformIcon"
-              value={formData.platformIcon}
-              onChange={handleChange}
-              className="w-full border px-2 py-2 rounded-md"
-            >
-              <option value="">Select</option>
-              <option value="Facebook">Facebook</option>
-              <option value="TikTok">TikTok</option>
-              <option value="Instagram">Instagram</option>
-              <option value="LinkedIn">LinkedIn</option>
-            </select>
-          </div>
-
-          {/* Upload Image */}
-          <div>
-            <Label htmlFor="picture">Upload Picture</Label>
-            <input
-              type="file"
-              name="picture"
-              id="picture"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border p-2 rounded w-full"
-            />
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="mt-2 w-full max-h-48 object-cover rounded"
-              />
-            )}
-          </div>
-
-          <Button type="submit" className="w-full">
-            Create ID Card
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter></CardFooter>
-    </Card>
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={createCardMutation.isPending}
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          {createCardMutation.isPending ? "Creating..." : "Create Card"}
+        </button>
+      </form>
+    </div>
   );
 }

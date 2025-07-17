@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import DigitalIDCardStyle1 from "../all-id-cards/components/DigitalIDCardStyle1";
-import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2";
-import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
+import DigitalIDCardStyle2 from "./components/modern-card";
+import DigitalIDCardStyle3 from "./components/minimal-card";
 import DigitalIDCardSuperCute from "../all-id-cards/components/DigitalIDCardSuperCute"; // <-- import cute style
 import cardData from "../data/cardData";
 

@@ -3,8 +3,13 @@
 import { FaFacebookF, FaGithub, FaLink } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
 
-export default function SocialShare() {
-  const currentUrl = typeof window !== "undefined" ? window.location.href : "";
+interface SocialLink {
+  platform: string;
+  url: string;
+}
+
+export default function SocialShare({ links }: { links: SocialLink[] }) {
+  if (!links || links.length === 0) return null;
 
   const openInNewTab = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
@@ -22,10 +27,7 @@ export default function SocialShare() {
     onClick: () => void;
   }) => (
     <div className="flex items-center gap-4 mb-4">
-      {/* Icon outside with no bg */}
       <div className="text-2xl">{icon}</div>
-
-      {/* Text box with hover and pointer */}
       <button
         onClick={onClick}
         className={`flex-1 px-4 py-2 rounded-lg shadow-md text-white ${color} hover:opacity-90 cursor-pointer transition text-left`}
@@ -37,31 +39,37 @@ export default function SocialShare() {
 
   return (
     <div className="max-w-md mx-auto mt-8">
-      <ButtonRow
-        icon={<FaFacebookF className="text-blue-500" />}
-        text="Share on Facebook"
-        color="bg-blue-500"
-        onClick={() =>
-          openInNewTab(
-            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`
-          )
-        }
-      />
+      {links.map((link, index) => {
+        const icon =
+          link.platform === "facebook" ? (
+            <FaFacebookF className="text-blue-500" />
+          ) : link.platform === "tiktok" ? (
+            <SiTiktok className="text-pink-500" />
+          ) : link.platform === "github" ? (
+            <FaGithub className="text-gray-800" />
+          ) : (
+            <FaLink />
+          );
 
-      <ButtonRow
-        icon={<SiTiktok className="text-pink-500" />}
-        text="Share to TikTok"
-        color="bg-pink-500"
-        onClick={() => openInNewTab("https://www.tiktok.com/upload?lang=en")}
-      />
+        const color =
+          link.platform === "facebook"
+            ? "bg-blue-500"
+            : link.platform === "tiktok"
+            ? "bg-pink-500"
+            : link.platform === "github"
+            ? "bg-gray-800"
+            : "bg-gray-500";
 
-      <ButtonRow
-        icon={<FaGithub className="text-gray-800" />}
-        text="Visit GitHub"
-        color="bg-gray-800"
-        onClick={() => openInNewTab("https://github.com/your-github-profile")}
-      />
-      
+        return (
+          <ButtonRow
+            key={index}
+            icon={icon}
+            text={`Visit ${link.platform}`}
+            color={color}
+            onClick={() => openInNewTab(link.url)}
+          />
+        );
+      })}
     </div>
   );
 }

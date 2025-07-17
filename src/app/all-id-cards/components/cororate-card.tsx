@@ -1,25 +1,15 @@
+"use client";
+
 import React from "react";
 import { FiEdit, FiEye } from "react-icons/fi";
-import SocialShare from "../components/SocialShare";
+import SocialShare from "../components/SocialShare"; // Make sure path is correct
 import { useRouter } from "next/navigation";
+import { CardItem } from "@/types/card-type"; // Adjust the path to your types
 
-type CardData = {
-  id: number;
-  user_id: number;
-  gender: string;
-  dob: string;
-  nationality: string;
-  phone: string;
-  address: string;
-  qr_url: string;
-  profile_url: string;
-  theme_color: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
+export default function CorporateCard({ card }: { card: CardItem }) {
   const router = useRouter();
+
+  if (!card) return <div>Loading...</div>;
 
   return (
     <div
@@ -29,34 +19,18 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
       }}
     >
       {/* View & Edit Buttons */}
-      <div className="absolute top-4 right-4 flex gap-3">
-        <button
-          onClick={() => router.push(`/view-id?style=1`)}
-          title="View Card"
-          className="text-white hover:text-green-300 transition-all duration-200 cursor-pointer" 
-        >
-          <FiEye size={22} />
-        </button>
-
-        <button
-          onClick={() => router.push("/edit-id")}
-          title="Edit Card"
-          className="text-white hover:text-yellow-300 transition-all duration-200 cursor-pointer"
-        >
-          <FiEdit size={22} />
-        </button>
-      </div>
+      
 
       {/* Header */}
       <div className="flex items-center mb-8 space-x-6">
         <div
           className="relative rounded-full p-1"
           style={{
-            boxShadow: `0 0 12px 4px ${cardData.theme_color}`,
+            boxShadow: `0 0 12px 4px ${card.theme_color}`,
           }}
         >
           <img
-            src={cardData.profile_url}
+            src={card.profile_url}
             alt="Profile"
             className="w-20 h-20 rounded-full border-2 border-indigo-400"
           />
@@ -68,22 +42,24 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
 
       {/* Info */}
       <div className="space-y-5">
-        <InfoRow label="ID" value={cardData.id} />
-        <InfoRow label="User ID" value={cardData.user_id} />
-        <InfoRow label="Gender" value={cardData.gender} />
-        <InfoRow label="Date of Birth" value={cardData.dob} />
-        <InfoRow label="Nationality" value={cardData.nationality} />
-        <InfoRow label="Phone" value={cardData.phone} />
-        <InfoRow label="Address" value={cardData.address} />
+        <InfoRow label="ID" value={card.id} />
+        <InfoRow label="User ID" value={card.user_id} />
+        <InfoRow label="Gender" value={card.gender} />
+        <InfoRow label="Date of Birth" value={card.dob} />
+        <InfoRow label="Nationality" value={card.nationality} />
+        <InfoRow label="Phone" value={card.phone} />
+        <InfoRow label="Address" value={card.address} />
       </div>
 
       {/* Social Share */}
-      <SocialShare />
+      <div className="mt-6">
+        <SocialShare links={[]} />
+      </div>
 
       {/* QR Code */}
       <div className="flex justify-center mt-8">
         <img
-          src={cardData.qr_url}
+          src={card.qr_url}
           alt="QR Code"
           className="w-36 h-36 rounded-lg border-4 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.8)]"
         />
@@ -91,8 +67,8 @@ export default function DigitalIDCard({ cardData }: { cardData: CardData }) {
 
       {/* Footer */}
       <div className="mt-8 flex justify-between text-sm font-mono text-indigo-300">
-        <div>Created: {cardData.created_at}</div>
-        <div>Updated: {cardData.updated_at}</div>
+        <div>Created: {card.created_at}</div>
+        <div>Updated: {card.updated_at}</div>
       </div>
     </div>
   );

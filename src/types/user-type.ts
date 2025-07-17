@@ -3,6 +3,8 @@ import { CardItem } from "./card-type";
 export interface IUser {
   message: string;
   data: UserData;
+  profile_url: string;
+  id: string;
 }
 export interface UserData {
   id: string;

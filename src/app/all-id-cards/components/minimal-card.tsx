@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   FaVenusMars,
@@ -6,26 +8,12 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
-import { FiEdit, FiEye } from "react-icons/fi"; // 🆕 Added FiEye
+import { FiEdit, FiEye } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import SocialShare from "./SocialShare";
+import { CardItem } from "@/types/card-type";
 
-type CardData = {
-  id: number;
-  user_id: number;
-  gender: string;
-  dob: string;
-  nationality: string;
-  phone: string;
-  address: string;
-  qr_url: string;
-  profile_url: string;
-  theme_color: string;
-  created_at: string;
-  updated_at: string;
-};
-
-export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }) {
+export default function CorporateCard({ card }: { card: CardItem }) {
   const router = useRouter();
 
   return (
@@ -35,28 +23,13 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
         boxShadow: "0 0 20px 6px rgba(255, 215, 0, 0.3)",
       }}
     >
-      {/* 🆕 View + Edit Icons */}
-      <div className="absolute top-4 right-4 flex gap-3">
-        <button
-          onClick={() => router.push(`/view-id?style=9`)}
-          title="View Card"
-          className="text-yellow-300 hover:text-green-200 transition duration-200 cursor-pointer"
-        >
-          <FiEye size={20} />
-        </button>
-        <button
-          onClick={() => router.push("/edit-id")}
-          title="Edit Card"
-          className="text-yellow-300 hover:text-yellow-500 transition duration-200 cursor-pointer"
-        >
-          <FiEdit size={20} />
-        </button>
-      </div>
+      {/* View + Edit Icons */}
+      
 
       {/* Header */}
       <div className="flex flex-col items-center mb-6">
         <img
-          src={cardData.profile_url}
+          src={card.profile_url}
           alt="Profile"
           className="w-24 h-24 rounded-md border-2 border-yellow-300 object-cover cursor-pointer"
           style={{
@@ -70,23 +43,23 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
           Clearance ID
         </h1>
         <p className="text-xs text-yellow-100 tracking-widest">
-          CID: {cardData.id} | Unit: {cardData.user_id}
+          ID: {card.id} | Unit: {card.user_id}
         </p>
       </div>
 
       {/* Info Fields */}
       <div className="grid grid-cols-1 gap-3 text-sm">
-        <InfoItem label="Gender" value={cardData.gender} icon={<FaVenusMars />} />
-        <InfoItem label="DOB" value={cardData.dob} icon={<FaBirthdayCake />} />
-        <InfoItem label="Nationality" value={cardData.nationality} icon={<FaFlag />} />
-        <InfoItem label="Phone" value={cardData.phone} icon={<FaPhoneAlt />} />
-        <InfoItem label="Address" value={cardData.address} icon={<FaMapMarkerAlt />} />
+        <InfoItem label="Gender" value={card.gender} icon={<FaVenusMars />} />
+        <InfoItem label="DOB" value={card.dob} icon={<FaBirthdayCake />} />
+        <InfoItem label="Nationality" value={card.nationality} icon={<FaFlag />} />
+        <InfoItem label="Phone" value={card.phone} icon={<FaPhoneAlt />} />
+        <InfoItem label="Address" value={card.address} icon={<FaMapMarkerAlt />} />
       </div>
 
       {/* QR + Share */}
       <div className="mt-5 flex justify-between items-center">
         <img
-          src={cardData.qr_url}
+          src={card.qr_url}
           alt="QR Code"
           className="w-20 h-20 rounded border border-yellow-300 shadow-sm cursor-pointer"
           style={{
@@ -94,14 +67,14 @@ export default function DigitalIDCardStyle9({ cardData }: { cardData: CardData }
           }}
         />
         <div className="ml-2">
-          <SocialShare />
+          <SocialShare links={[]} />
         </div>
       </div>
 
       {/* Footer */}
       <div className="mt-5 border-t border-yellow-600 pt-3 text-xs text-yellow-100 text-center tracking-wide">
-        <p>Issued: {cardData.created_at}</p>
-        <p>Updated: {cardData.updated_at}</p>
+        <p>Issued: {card.created_at}</p>
+        <p>Updated: {card.updated_at}</p>
         <p
           className="mt-2 text-yellow-400 font-bold"
           style={{ textShadow: "0 0 6px rgba(255,215,0,0.8)" }}

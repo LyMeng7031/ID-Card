@@ -1,181 +1,120 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
-import { FiLogOut, FiMail, FiUser, FiEdit } from "react-icons/fi";
-
-import DigitalIDCardStyle1 from "../all-id-cards/components/DigitalIDCardStyle1";
-import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2";
-import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
-import DigitalIDCardSuperCute from "../all-id-cards/components/DigitalIDCardSuperCute";
-
 import { userRequest } from "@/lib/api/user-api";
-import cardData from "../data/cardData";
+import { User, Mail } from "lucide-react";
 
-export default function ProfilePage() {
-  const router = useRouter();
+import CorporateCard from "../all-id-cards/components/cororate-card";
+import Link from "next/link";
+import ModernCard from "../all-id-cards/components/modern-card";
+import Minimal from "../all-id-cards/components/minimal-card";
+
+export default function Home() {
   const { PROFILE } = userRequest();
-
   const { data: me, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => PROFILE(),
   });
 
-  const [styleIndex, setStyleIndex] = useState(1);
-  const [fade, setFade] = useState(false);
+  const [cardIndex, setCardIndex] = useState(0);
 
-  const styleNames: { [key: string]: string } = {
-    "1": "Classic Style",
-    "2": "Modern Style",
-    "3": "Minimal Style",
-    "4": "Cute Style 🐾",
-  };
+  if (isLoading) {
+    return <div className="text-center p-10">Loading...</div>;
+  }
 
-  const toggleStyle = () => {
-    setFade(true);
-    setTimeout(() => {
-      setStyleIndex((prev) => (prev % 4) + 1);
-      setFade(false);
-    }, 300);
-  };
+  if (!me || !me.data) {
+    return <div className="text-center p-10">Profile not found.</div>;
+  }
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
+  const cards = me.data.idCard || [];
+  const currentCard = cards[cardIndex] || null;
 
-  const buttonBase =
-    "w-full py-3 rounded-2xl font-semibold shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 hover:brightness-110";
-
-  if (isLoading) return <div className="text-center mt-20">Loading...</div>;
-
-  const user = {
-    fullName: me?.data?.full_name,
-    username: me?.data?.user_name,
-    email: me?.data?.email,
-    avatar: me?.data?.avatar,
+  const handleChangeCard = () => {
+    if (cards.length === 0) return;
+    setCardIndex((prev) => (prev + 1) % cards.length);
   };
 
   return (
-    <>
-      <style>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-8px);
-          }
-        }
-        .float-animation {
-          animation: float 4s ease-in-out infinite;
-        }
-      `}</style>
-
-      <div className="min-h-screen bg-gradient-to-tr from-gray-100 via-gray-200 to-gray-300 flex flex-col items-center justify-center p-6">
-        <div className="relative rounded-3xl shadow-xl max-w-sm w-full p-8 text-center">
-          {/* Edit & Logout Icons */}
-          <div className="absolute top-5 right-5 flex gap-4">
-            <button
-              onClick={() => router.push("/edit-profile")}
-              className="text-gray-500 hover:text-green-600 transition-transform duration-200 hover:scale-110"
-            >
-              <FiEdit size={22} />
-            </button>
-            <button
-              onClick={handleLogout}
-              className="text-gray-400 hover:text-red-500 transition-transform duration-200 hover:scale-110"
-            >
-              <FiLogOut size={22} />
-            </button>
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-4 items-center justify-center">
+        {/* Header */}
+        <div className="w-full max-w-md mx-auto overflow-hidden shadow-lg border-0 rounded-t-2xl">
+          <div className="h-32 bg-gradient-to-r from-blue-500 to-pink-500 relative rounded-t-2xl">
+            <div className="absolute inset-0 bg-black/10"></div>
           </div>
 
-          {/* Avatar */}
-          <div className="relative mx-auto w-28 h-28 mb-6">
-            <div
-              className="absolute inset-0 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 blur-2xl opacity-70 float-animation"
-              style={{ filter: "blur(30px)" }}
-            />
-            <img
-              src={
-                user.avatar ||
-                "https://api.dicebear.com/7.x/initials/svg?seed=User"
-              }
-              alt="Profile Avatar"
-              className="relative w-28 h-28 rounded-full border-4 border-white object-cover shadow-lg float-animation"
-            />
-          </div>
-
-          {/* Name */}
-          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
-            {user.fullName}
-          </h2>
-
-          {/* User Info */}
-          <div className="w-full bg-gradient-to-r from-gray-100 to-gray-200 border border-gray-300 rounded-xl shadow-inner p-4 text-left text-sm space-y-2">
-            <div className="flex items-center gap-2 text-gray-800 font-medium">
-              <FiUser className="text-green-600" />
-              <span>@{user.username}</span>
+          {/* Avatar and user info */}
+          <div className="relative px-6 pb-6">
+            <div className="flex justify-center -mt-14 mb-4">
+              <div className="relative">
+                <Avatar className="w-24 h-24 border-4 border-white shadow-lg">
+                  <AvatarImage src={me.data.avatar} alt={me.data.full_name} />
+                  <AvatarFallback>
+                    {me.data.full_name?.[0] ?? "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-gray-600">
-              <FiMail className="text-green-600" />
-              <span>{user.email}</span>
+
+            <div className="text-center space-y-2">
+              <h1 className="text-2xl font-bold text-gray-900">
+                {me.data.full_name}
+              </h1>
+              <div className="flex items-center justify-center gap-2 text-gray-600">
+                <User className="h-4 w-4" />@{me.data.user_name}
+              </div>
+              <div className="flex items-center justify-center gap-2 text-gray-600">
+                <Mail className="h-4 w-4" />{me.data.email}
+              </div>
             </div>
-          </div>
 
-          {/* Buttons */}
-          <div className="mt-8 space-y-4">
-            <button
-              onClick={() => router.push("/create-id")}
-              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
-            >
-              Create ID Card
-            </button>
-
-            <button
-              onClick={toggleStyle}
-              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
-            >
-              Change Style
-            </button>
-
-            <button
-              onClick={() => router.push("/all-id-cards")}
-              className={`${buttonBase} bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-green-400`}
-            >
-              See All ID Cards
-            </button>
+            <div className="pt-4 space-x-0.5">
+              <Link href="/create-id">
+                <div>
+                  <button className="w-full bg-green-700 text-white px-4 py-2 rounded-xl shadow-md hover:bg-blue-600 transition cursor-pointer">
+                  Create New Card
+                </button>
+                </div>
+              </Link>
+              {cards.length > 1 && (
+               <div>
+                 <button
+                  onClick={handleChangeCard}
+                  className="w-full bg-green-700 text-white px-4 py-2 rounded-xl shadow-md hover:bg-blue-600 transition cursor-pointer"
+                >
+                  Change Card
+                </button>
+               </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Card Preview */}
-        <div className="flex flex-col items-center mt-12 transition-opacity duration-300">
-          <p className="text-xl font-semibold text-gray-900 mb-3">
-            {styleNames[styleIndex.toString()]}
-          </p>
-          <div
-            className={`transition-opacity duration-300 ${
-              fade ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            {(() => {
-              switch (styleIndex) {
-                case 1:
-                  return <DigitalIDCardStyle1 cardData={cardData} />;
-                case 2:
-                  return <DigitalIDCardStyle2 cardData={cardData} />;
-                case 3:
-                  return <DigitalIDCardStyle3 cardData={cardData} />;
-                case 4:
-                  return <DigitalIDCardSuperCute cardData={cardData} />;
-                default:
-                  return null;
-              }
-            })()}
+        <div className="w-full max-w-md mx-auto p-4">
+          <div className="grid grid-cols-1 gap-4">
+            {currentCard ? (
+              <div>
+                {currentCard.card_type === "Corporate" && (
+                  <CorporateCard card={currentCard} />
+                )}
+                {currentCard.card_type === "Modern" && (
+                  <ModernCard card={currentCard} />
+                )}
+                {currentCard.card_type === "Minimal" && (
+                  <Minimal card={currentCard} />
+                )}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">
+                No ID cards created yet.
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
