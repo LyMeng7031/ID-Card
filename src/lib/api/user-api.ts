@@ -8,7 +8,15 @@ export const userRequest = () => {
       method: "GET",
     });
   };
+  const UPDATE_PROFILE = async (payload: IUser): Promise<IUser> => {
+    return await axios({
+      url: "/user/update-profile",
+      method: "PUT",
+      data: payload,
+    });
+  };
   return {
     PROFILE,
+    UPDATE_PROFILE,
   };
 };

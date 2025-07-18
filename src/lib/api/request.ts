@@ -6,8 +6,10 @@ import { useAuthStore } from "@/app/store/auth-store";
 
 // export const injectStore = (_store: Store) => {};
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api/v1", // Replace with your API base URL
+  baseURL: BASE_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -68,7 +70,7 @@ axiosInstance.interceptors.response.use(
           // const refreshToken = useAuthStore.getState().refreshToken;
           const response = await axiosInstance({
             method: "POST",
-            url: `http://localhost:5000/api/v1/auth/refresh-token`,
+            url: `${BASE_URL}/auth/refresh-token`,
             // data: {
             //   refreshToken: refreshToken,
             // },

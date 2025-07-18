@@ -9,14 +9,11 @@ import DigitalIDCardStyle1 from "../all-id-cards/components/DigitalIDCardStyle1"
 import DigitalIDCardStyle2 from "../all-id-cards/components/DigitalIDCardStyle2";
 import DigitalIDCardStyle3 from "../all-id-cards/components/DigitalIDCardStyle3";
 import DigitalIDCardSuperCute from "../all-id-cards/components/DigitalIDCardSuperCute";
-
 import { userRequest } from "@/lib/api/user-api";
 import cardData from "../data/cardData";
-
 export default function ProfilePage() {
   const router = useRouter();
-  const { PROFILE } = userRequest();
-
+  const { PROFILE, UPDATE_PROFILE } = userRequest();
   const { data: me, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: async () => PROFILE(),
@@ -40,6 +37,25 @@ export default function ProfilePage() {
     }, 300);
   };
 
+  const { data: isError, refetch } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => PROFILE(),
+  });
+
+  // const handleSave = async () => {
+  //   try {
+  //     await UPDATE_PROFILE({
+  //       user_id: me?.data?.user_id,
+  //       full_name: me?.data?.full_name,
+  //       user_name: me?.data?.user_name,
+  //       email: me?.data?.email,
+  //       avatar: me?.data?.avatar,
+  //     });
+  //     refetch();
+  //   } catch (error) {
+  //     console.error("Error updating profile:", error);
+  //   }
+  // };
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/login");
