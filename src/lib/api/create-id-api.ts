@@ -14,8 +14,19 @@ export const createCardRequest = () => {
 
     return response as unknown as CardItem;
   };
+  const UPDATE_CARD = async (
+    id: string,
+    payload: CreateCardType
+  ): Promise<ICardResponse> => {
+    return await request({
+      url: `/card/update-card/${id}`,
+      method: "PUT",
+      data: payload,
+    });
+  };
 
   return {
+    UODATE_CARD,
     CREATE,
   };
 };

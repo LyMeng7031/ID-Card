@@ -2,7 +2,6 @@
 
 import { FaFacebookF, FaGithub, FaLink } from "react-icons/fa";
 import { SiTiktok } from "react-icons/si";
-
 interface SocialLink {
   platform: string;
   url: string;
