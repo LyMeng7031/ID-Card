@@ -19,7 +19,6 @@ export default function CorporateCard({ card }: { card: CardItem }) {
       }}
     >
       {/* View & Edit Buttons */}
-      
 
       {/* Header */}
       <div className="flex items-center mb-8 space-x-6">
