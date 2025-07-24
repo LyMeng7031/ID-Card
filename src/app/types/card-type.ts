@@ -1,4 +1,4 @@
-import { CardItem, IUser } from "./user-type";
+import { IUser } from "./user-type";
 
 export interface ICardResponse {
   message: string;
@@ -77,46 +77,68 @@ export interface ICardServerSide {
   card: CardItem;
 }
 
-export type User = {
-  id: string;
-  full_name: string;
-  user_name: string;
-  email: string;
-  password: string;
-  avatar: string;
-  is_deleted: boolean;
-  is_active: boolean;
-  roles: string[];
-  created_at: string;
-  updated_at: string;
-};
+// export type User = {
+//   id: string;
+//   full_name: string;
+//   user_name: string;
+//   email: string;
+//   password: string;
+//   avatar: string;
+//   is_deleted: boolean;
+//   is_active: boolean;
+//   roles: string[];
+//   created_at: string;
+//   updated_at: string;
+// };
 
-export type ICard = {
+// export type ICard = {
+//   id: string;
+//   gender: string;
+//   dob: string;
+//   address: string;
+//   phone: string;
+//   job: string;
+//   bio: string;
+//   web_site: string;
+//   company: string;
+//   nationality: string;
+//   qr_url: string | null;
+//   qr_code: string | null;
+//   card_type: string;
+//   is_active: boolean;
+//   is_deleted: boolean;
+//   theme_color: string | null;
+//   updated_at: string;
+//   created_at: string;
+//   user: User;
+//   socialLinks: ISocialLink[];
+// };
+
+export interface CardItem {
   id: string;
-  gender: string;
+  gender: GenderType;
   dob: string;
   address: string;
   phone: string;
+  nationality: string;
+  qr_url?: string;
+  qr_code?: string;
+  card_type?: CardType;
+  is_active: boolean;
+  is_deleted: boolean;
+  theme_color?: string;
+  updated_at: string;
+  created_at: string;
+  socialLinks: SocialLink[];
   job: string;
   bio: string;
   web_site: string;
   company: string;
-  nationality: string;
-  qr_url: string | null;
-  qr_code: string | null;
-  card_type: string;
-  is_active: boolean;
-  is_deleted: boolean;
-  theme_color: string | null;
-  updated_at: string;
-  created_at: string;
-  user: User;
-  socialLinks: ISocialLink[];
-};
+}
 
 export type CardResponse = {
   message: string;
-  card: ICard[];
+  card: CardItem[];
 };
 export interface ISocialLink {
   id: string;

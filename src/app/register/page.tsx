@@ -97,7 +97,7 @@ export default function Register() {
         </div>
 
         {/* Right Column - Form */}
-        <div className="w-full lg:w-7/12 p-8">
+        <div className="w-full lg:w-7/12 zp-8">
           <Card className="w-full shadow-md">
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold text-center mb-6 text-gray-800 dark:text-white">

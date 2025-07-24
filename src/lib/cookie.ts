@@ -1,4 +1,4 @@
-import { CookieName } from "@/types";
+import { CookieName } from "@/types/cookie-enum";
 import Cookies from "js-cookie";
 
 export const getAccessToken = () => Cookies.get(CookieName.ACCESS_TOKEN);
